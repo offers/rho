@@ -29,10 +29,6 @@ try {
     } else {
         echo "API Server error\n";
     }
-} catch(Rho\TransportException $e) {
-    showException($e);
-} catch(Rho\CircuitBreaker\CircuitBreakerOpenException $e) {
-    showException($e);
 } catch(Rho\TooManyRetriesException $e) {
     showException($e);
 }
