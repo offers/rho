@@ -7,12 +7,12 @@ class SimpleCircuitBreaker {
     const OPEN = 1;
     const HALF_OPEN = 2;
 
-    protected $failThreshold = 5;
+    protected $failThreshold = 3;
     protected $resetTime = 5; // seconds
     protected $fails = 0;
 
-    public static function wrap($obj) {
-        return new SimpleCircuitBreaker($obj);
+    public static function wrap($obj, $opts = []) {
+        return new SimpleCircuitBreaker($obj, $opts);
     }
 
     public function __construct($circuit, $opts = []) {
