@@ -4,7 +4,7 @@
 /*
  * Get a current quote for Bitcoin in USD.
  * Uses a Circuit Breaker to limit failures to 3 in 10s.
- * Uses a Retrier to keep trying until successful or the breaker opens.
+ * Uses a Retrier to try at most 10 times or the breaker opens.
  */
 
 require "../vendor/autoload.php";
@@ -19,7 +19,7 @@ function showException($e) {
 
 $client = new HttpJsonTransport("http://api.coindesk.com");
 $client = SimpleCircuitBreaker::wrap($client, ['failThreshold' => 3, 'resetTime' => 10]);
-$client = Retrier::wrap($client);
+$client = Retrier::wrap($client, ['retries' => 10, 'delay' => 1000]); // delay in ms
 
 try {
     $resp = $client->rpc(['GET', '/v1/bpi/currentprice/USD.json'], [], ['timeout' => 3, 'connect_timeout' => 3]);
