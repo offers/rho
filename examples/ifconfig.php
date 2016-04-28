@@ -9,15 +9,17 @@
 
 require "../vendor/autoload.php";
 
-use \Rho\Transport\HttpJsonTransport;
-use \Rho\Retrier;
+use Rho\Transport\HttpJsonTransport;
+use Rho\Retrier;
+use Monolog\Logger; 
 
 function showException($e) {
     echo $e->getMessage() . "\n";
 }
 
-$client = new HttpJsonTransport("http://ifconfig.me");
-$client = Retrier::wrap($client);
+$logger = new Logger('ifconfig');
+$client = new HttpJsonTransport("http://ifconfig.me", ['logger' => $logger]);
+$client = Retrier::wrap($client, ['logger' => $logger]);
 
 try {
     $resp = $client->rpc(['GET', '/all.json'], [], ['timeout' => 5, 'connect_timeout' => 5]);

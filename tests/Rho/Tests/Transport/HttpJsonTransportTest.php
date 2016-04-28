@@ -4,6 +4,7 @@ namespace Rho\Tests;
 
 use Rho;
 use Rho\Transport;
+use Rho\NullLogger;
 use GuzzleHttp;
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
@@ -82,6 +83,7 @@ class FakeHttpJsonTransport extends Transport\HttpJsonTransport {
     public function __construct($client, $server) {
         $this->client = $client;
         $this->setServer($server);
+        $this->logger = new NullLogger();
         return $this;
     }
 }

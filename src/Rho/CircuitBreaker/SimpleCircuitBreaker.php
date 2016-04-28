@@ -2,6 +2,8 @@
 
 namespace Rho\CircuitBreaker;
 
+use Rho\NullLogger;
+
 class SimpleCircuitBreaker {
     const CLOSED = 0;
     const OPEN = 1;
@@ -24,6 +26,12 @@ class SimpleCircuitBreaker {
             $this->resetTime = $opts['resetTime'];
         }
 
+        if(isset($opts['logger'])) {
+            $this->logger = $opts['logger']->withName('CircuitBreaker');
+        } else {
+            $this->logger = new NullLogger();
+        }
+
         $this->circuit = $circuit;
         $this->opts = $opts;
     }
@@ -33,6 +41,7 @@ class SimpleCircuitBreaker {
             case self::CLOSED:
             case self::HALF_OPEN:
                 try {
+                    $this->logger->debug("closed or half-open", ['func' => $name, 'args' => $args]);
                     $result = call_user_func_array([$this->circuit, $name], $args);
                     $this->circuitBreakerReset();
                     return $result;
@@ -42,6 +51,7 @@ class SimpleCircuitBreaker {
                 }
                 break;
             case self::OPEN:
+                $this->logger->info("circuit breaker open");
                 throw new CircuitBreakerOpenException();
                 break;
         }
@@ -60,6 +70,7 @@ class SimpleCircuitBreaker {
     protected function circuitRecordFail() {
         $this->fails++;
         $this->lastFailTime = microtime(true);
+        $this->logger->info("circuit failed", ['fails' => $this->fails]);
     }
 
     protected function circuitTooManyFails(): bool {
@@ -73,5 +84,6 @@ class SimpleCircuitBreaker {
     protected function circuitBreakerReset() {
         $this->fails = 0;
         $this->lastFailTime = null;
+        $this->logger->debug("reset");
     }
 }

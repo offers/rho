@@ -8,9 +8,9 @@ use Rho\{ErrorResponse,Response};
 use GuzzleHttp;
 
 class HttpJsonTransport extends AbstractTransport {
-    public function __construct($server) {
+    public function __construct($server, $opts = []) {
         $this->client = new GuzzleHttp\Client();
-        parent::__construct($server);
+        parent::__construct($server, $opts);
     }
 
     public function rpc($endpoint, array $args = [], array $opts = []): Rho\AbstractResponse {
@@ -19,12 +19,17 @@ class HttpJsonTransport extends AbstractTransport {
         $url = $this->getServer() . $endpoint[1];
         $opts['query'] = $args;
 
+        $this->logger->info("http request", ['method' => $method, 'url' => $url, 'opts' => $opts]);
+
         try {
             $resp = $this->client->request($method, $url, $opts);
         } catch(GuzzleHttp\Exception\TransferException $e) {
+            $this->logger->error("GuzzleHttp\Exception\TransferException", ['e' => $e]);
             throw new TransportException($e);
         }
             
+        $this->logger->info("http response", ['code' => $resp->getStatusCode()]);
+
         if(200 == $resp->getStatusCode()) {
             $result = @json_decode($resp->getBody(), true);
             if(null == $result) {

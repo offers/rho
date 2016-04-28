@@ -9,9 +9,9 @@
 
 require "../vendor/autoload.php";
 
-use \Rho\Transport\HttpJsonTransport;
-use \Rho\CircuitBreaker\SimpleCircuitBreaker;
-use \Rho\Retrier;
+use Rho\Transport\HttpJsonTransport;
+use Rho\CircuitBreaker\SimpleCircuitBreaker;
+use Rho\Retrier;
 
 function showException($e) {
     echo $e->getMessage() . "\n";
