@@ -10,13 +10,13 @@ use GuzzleHttp;
 class HttpJsonTransport extends AbstractTransport {
     public function __construct($server) {
         $this->client = new GuzzleHttp\Client();
-        super($server);
+        parent::__construct($server);
     }
 
-    public function rpc($endpoint, array $args, array $opts = []): Rho\AbstractResponse {
+    public function rpc($endpoint, array $args = [], array $opts = []): Rho\AbstractResponse {
         // $endpoint is like ['GET', '/example']
         $method = $endpoint[0];
-        $url = $this->getServer() + $endpoint[1];
+        $url = $this->getServer() . $endpoint[1];
         $opts['query'] = $args;
 
         try {
