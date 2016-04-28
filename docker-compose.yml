@@ -1,0 +1,12 @@
+rho:
+  command: /bin/bash -l -c "cd /rho && composer install --no-ansi && composer dump-autoload --optimize && /sbin/my_init"
+  build: .
+  volumes:
+    - .:/rho
+  links:
+    - redis
+
+redis:
+  image: redis:2.8
+  ports:
+  - 20000:6379

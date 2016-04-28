@@ -1,0 +1,31 @@
+{
+    "name": "offers/rho",
+    "description": "Microservice client framework",
+    "keywords": [
+        "microservice"
+    ],
+    "homepage": "https://github.com/offers/rho",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chris Kite"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "guzzlehttp/guzzle": ">=6.2.0",
+        "predis/predis": ">=1.0.3"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Rho\\": "src/Rho"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rho\\Tests\\": "tests/Rho/Tests"
+        }
+    }
+}
