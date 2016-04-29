@@ -2,7 +2,11 @@
 
 namespace Rho\CircuitBreaker;
 
+use Rho;
+
 class PercentCircuitBreaker extends AbstractPercentCircuitBreaker {
+    use Rho\HasLogger;
+
     protected $calls = 0;
     protected $fails = 0;
     protected $periodStart = 0;
@@ -16,7 +20,7 @@ class PercentCircuitBreaker extends AbstractPercentCircuitBreaker {
             case self::CLOSED:
                 $this->circuitRecordCall();
                 try {
-                    return call_user_func_array([$this->circuit, $name], $args);
+                    return call_user_func_array([$this->obj, $name], $args);
                 } catch (\Exception $e) {
                     $this->circuitRecordFail();
                     throw $e;

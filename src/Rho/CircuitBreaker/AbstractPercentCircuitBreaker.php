@@ -2,7 +2,11 @@
 
 namespace Rho\CircuitBreaker;
 
+use Rho;
+
 abstract class AbstractPercentCircuitBreaker {
+    use Rho\HasLogger;
+
     const CLOSED = 0;
     const OPEN = 1;
 
@@ -12,7 +16,10 @@ abstract class AbstractPercentCircuitBreaker {
 
     abstract static function wrap($obj);
 
-    public function __construct($circuit, $opts = []) {
+    public function __construct($obj, $opts = []) {
+        $this->obj = $obj;
+        $this->opts = $opts;
+
         if(isset($opts['failThreshold'])) {
             $this->failThreshold = $opts['failThreshold'];
         }
@@ -27,9 +34,6 @@ abstract class AbstractPercentCircuitBreaker {
                 throw new InvalidArgumentException("minCalls must be > 0");
             }
         }
-
-        $this->circuit = $circuit;
-        $this->opts = $opts;
     }
 
     abstract function __call($name, $args);

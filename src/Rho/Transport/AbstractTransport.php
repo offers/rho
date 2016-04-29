@@ -6,16 +6,12 @@ use Rho;
 use Rho\NullLogger;
 
 abstract class AbstractTransport {
+    use Rho\HasLogger;
+
     protected $server;
-    protected $logger;
 
     public function __construct($server, $opts = []) {
-        if(isset($opts['logger'])) {
-            $this->logger = $opts['logger']->withName('Transport');
-        } else {
-            $this->logger = new NullLogger();
-        }
-
+        $this->opts = $opts;
         $this->setServer($server);
     }
     

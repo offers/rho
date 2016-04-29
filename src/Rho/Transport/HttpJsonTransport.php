@@ -19,16 +19,16 @@ class HttpJsonTransport extends AbstractTransport {
         $url = $this->getServer() . $endpoint[1];
         $opts['query'] = $args;
 
-        $this->logger->info("http request", ['method' => $method, 'url' => $url, 'opts' => $opts]);
+        $this->_logger()->info("http request", ['method' => $method, 'url' => $url, 'opts' => $opts]);
 
         try {
             $resp = $this->client->request($method, $url, $opts);
         } catch(GuzzleHttp\Exception\TransferException $e) {
-            $this->logger->error("GuzzleHttp\Exception\TransferException", ['e' => $e]);
+            $this->_logger()->error("GuzzleHttp\Exception\TransferException", ['e' => $e]);
             throw new TransportException($e);
         }
             
-        $this->logger->info("http response", ['code' => $resp->getStatusCode()]);
+        $this->_logger()->info("http response", ['code' => $resp->getStatusCode()]);
 
         if(200 == $resp->getStatusCode()) {
             $result = @json_decode($resp->getBody(), true);

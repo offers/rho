@@ -16,14 +16,16 @@ class RedisPercentCircuitBreaker extends AbstractPercentCircuitBreaker {
     public function __call($name, $args) {
         switch($this->circuitState()) {
             case self::CLOSED:
+                $this->_logger()->debug("closed", ['func' => $name, 'args' => $args]);
                 try {
-                    return call_user_func_array([$this->circuit, $name], $args);
+                    return call_user_func_array([$this->obj, $name], $args);
                 } catch (\Exception $e) {
                     $this->circuitRecordFail();
                     throw $e;
                 }
                 break;
             case self::OPEN:
+                $this->_logger()->info("open");
                 throw new CircuitBreakerOpenException();
                 break;
         }
@@ -47,7 +49,8 @@ class RedisPercentCircuitBreaker extends AbstractPercentCircuitBreaker {
     }
 
     public function circuitRecordFail() {
-        $this->redis->incr($this->prefix . 'fails');
+        $fails = $this->redis->incr($this->prefix . 'fails');
+        $this->_logger()->info("circuit failed", ['fails' => $fails]);
     }
 }
 

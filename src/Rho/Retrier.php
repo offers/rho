@@ -40,7 +40,7 @@ class Retrier {
     public function __call($name, $args) {
         $r = 0;
         for(; 0 == $this->retries || $r <= $this->retries; $r++) {
-            $this->logger->info("try $r", ['func' => $name, 'args' => $args]);
+            $this->logger->debug("try $r", ['func' => $name, 'args' => $args]);
             try {
                 return call_user_func_array([$this->obj, $name], $args);
             } catch(CircuitBreaker\CircuitBreakerOpenException $e) {

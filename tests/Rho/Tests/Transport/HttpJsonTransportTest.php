@@ -80,10 +80,11 @@ class HttpJsonTransportTest extends \PHPUnit_Framework_TestCase {
 }
 
 class FakeHttpJsonTransport extends Transport\HttpJsonTransport {
+    use Rho\HasLogger;
+
     public function __construct($client, $server) {
         $this->client = $client;
         $this->setServer($server);
-        $this->logger = new NullLogger();
         return $this;
     }
 }

@@ -2,9 +2,12 @@
 
 namespace Rho\CircuitBreaker;
 
+use Rho;
 use Rho\NullLogger;
 
 class SimpleCircuitBreaker {
+    use Rho\HasLogger;
+
     const CLOSED = 0;
     const OPEN = 1;
     const HALF_OPEN = 2;
@@ -17,7 +20,10 @@ class SimpleCircuitBreaker {
         return new SimpleCircuitBreaker($obj, $opts);
     }
 
-    public function __construct($circuit, $opts = []) {
+    public function __construct($obj, $opts = []) {
+        $this->obj = $obj;
+        $this->opts = $opts;
+
         if(isset($opts['failThreshold'])) {
             $this->failThreshold = $opts['failThreshold'];
         }
@@ -25,15 +31,6 @@ class SimpleCircuitBreaker {
         if(isset($opts['resetTime'])) {
             $this->resetTime = $opts['resetTime'];
         }
-
-        if(isset($opts['logger'])) {
-            $this->logger = $opts['logger']->withName('CircuitBreaker');
-        } else {
-            $this->logger = new NullLogger();
-        }
-
-        $this->circuit = $circuit;
-        $this->opts = $opts;
     }
 
     public function __call($name, $args) {
@@ -41,8 +38,8 @@ class SimpleCircuitBreaker {
             case self::CLOSED:
             case self::HALF_OPEN:
                 try {
-                    $this->logger->debug("closed or half-open", ['func' => $name, 'args' => $args]);
-                    $result = call_user_func_array([$this->circuit, $name], $args);
+                    $this->_logger()->debug("closed or half-open", ['func' => $name, 'args' => $args]);
+                    $result = call_user_func_array([$this->obj, $name], $args);
                     $this->circuitBreakerReset();
                     return $result;
                 } catch (\Exception $e) {
@@ -51,7 +48,7 @@ class SimpleCircuitBreaker {
                 }
                 break;
             case self::OPEN:
-                $this->logger->info("circuit breaker open");
+                $this->_logger()->info("open");
                 throw new CircuitBreakerOpenException();
                 break;
         }
@@ -70,7 +67,7 @@ class SimpleCircuitBreaker {
     protected function circuitRecordFail() {
         $this->fails++;
         $this->lastFailTime = microtime(true);
-        $this->logger->info("circuit failed", ['fails' => $this->fails]);
+        $this->_logger()->info("circuit failed", ['fails' => $this->fails]);
     }
 
     protected function circuitTooManyFails(): bool {
@@ -84,6 +81,6 @@ class SimpleCircuitBreaker {
     protected function circuitBreakerReset() {
         $this->fails = 0;
         $this->lastFailTime = null;
-        $this->logger->debug("reset");
+        $this->_logger()->debug("reset");
     }
 }
