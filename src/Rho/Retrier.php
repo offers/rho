@@ -11,7 +11,7 @@ class Retrier {
     protected $obj;
     protected $retries = 0;
     protected $backoff = 1.0;
-    protected $delay = 100; // ms
+    protected $delay = 0.1; // seconds
 
     public static function wrap($obj, $opts = []) {
         return new Retrier($obj, $opts);
@@ -45,8 +45,8 @@ class Retrier {
                 throw $e;
             } catch(\Exception $e) {
                 if(0 == $this->retries || $r < $this->retries) {
-                    $d = $this->delay * (1000 * ($this->backoff ** $this->retries));
-                    $this->_logger()->info("exception, delaying by $d us");
+                    $d = $this->delay * 1000000 * ($this->backoff ** $this->retries);
+                    $this->_logger()->info("exception, delaying", ['delay' => floatval($d) / 1000000]);
                     usleep($d);
                 }
             }

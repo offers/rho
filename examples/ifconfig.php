@@ -23,7 +23,7 @@ function showException($e) {
 $logger = new Logger('ifconfig');
 $client = new HttpJsonTransport("http://ifconfig.me", ['logger' => $logger]);
 $client = SimpleRateLimiter::wrap($client, ['logger' => $logger, 'limits' => [10 => 1]]); // limit to 1 request every 10s
-$client = Retrier::wrap($client, ['logger' => $logger]);
+$client = Retrier::wrap($client, ['logger' => $logger, 'delay' => 0.5]); // retry forever with 0.5s delay
 
 try {
     $resp = $client->rpc(['GET', '/all.json'], [], ['timeout' => 5, 'connect_timeout' => 5]);

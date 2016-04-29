@@ -21,8 +21,8 @@ function showException($e) {
 
 $client = new HttpJsonTransport("http://api.coindesk.com");
 $client = SimpleRateLimiter::wrap($client, ['limits' => [5 => 2]]); // limit to 2 requests every 5s
-$client = SimpleCircuitBreaker::wrap($client, ['failThreshold' => 3, 'resetTime' => 10]);
-$client = Retrier::wrap($client, ['retries' => 10, 'delay' => 1000]); // delay in ms
+$client = SimpleCircuitBreaker::wrap($client, ['failThreshold' => 3, 'resetTime' => 10]); // allow only 3 fails every 10s
+$client = Retrier::wrap($client, ['retries' => 10, 'delay' => 1.0]); // retry up to 10 times, delaying 1s each
 
 try {
     $resp = $client->rpc(['GET', '/v1/bpi/currentprice/USD.json'], [], ['timeout' => 3, 'connect_timeout' => 3]);
