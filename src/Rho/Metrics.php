@@ -3,6 +3,7 @@
 namespace Rho;
 
 class Metrics {
+    use HasLogger;
     use HasCollector;
 
     const STATS = ['time', 'count', 'countFailures', 'countSuccesses'];
@@ -49,25 +50,29 @@ class Metrics {
         }
         $end = microtime(true);
 
-        foreach($this->stats as $stat) {
-            switch($stat) {
-                case 'time':
-                    $this->_collector()->histogram($this->name . ".time", $end - $start);
-                    break;
-                case 'count':
-                    $this->_collector()->increment($this->name . ".count");
-                    break;
-                case 'countFailures':
-                    if(null != $ex) {
-                        $this->_collector()->increment($this->name . ".failures");
-                    }
-                    break;
-                case 'countSuccesses':
-                    if(null == $ex) {
-                        $this->_collector()->increment($this->name . ".successes");
-                    }
-                    break;
+        try {
+            foreach($this->stats as $stat) {
+                switch($stat) {
+                    case 'time':
+                        $this->_collector()->histogram($this->name . ".time", $end - $start);
+                        break;
+                    case 'count':
+                        $this->_collector()->increment($this->name . ".count");
+                        break;
+                    case 'countFailures':
+                        if(null != $ex) {
+                            $this->_collector()->increment($this->name . ".failures");
+                        }
+                        break;
+                    case 'countSuccesses':
+                        if(null == $ex) {
+                            $this->_collector()->increment($this->name . ".successes");
+                        }
+                        break;
+                }
             }
+        } catch(\Exception $e) {
+            $this->_logger()->error($e->getMessage());
         }
 
         if(null != $ex) {
