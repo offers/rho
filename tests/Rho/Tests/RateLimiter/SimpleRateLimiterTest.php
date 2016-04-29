@@ -25,11 +25,8 @@ class SimpleRateLimiterTest extends \PHPUnit_Framework_TestCase {
         $stub->method('foo')
              ->willReturn('bar');
 
-        $r = new SimpleRateLimiter($stub, ['limits' => [1 => 10]]);
-        for($i = 0; $i < 10; $i++) {
-            $this->assertEquals('bar', $r->foo());
-        }
-
+        $r = new SimpleRateLimiter($stub, ['limits' => [10 => 1]]);
+        $this->assertEquals('bar', $r->foo());
         $this->expectException(OverRateLimitException::class);
         $this->assertEquals('bar', $r->foo());
     }

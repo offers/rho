@@ -5,8 +5,6 @@ namespace Rho\RateLimiter;
 use Rho;
 
 abstract class AbstractRateLimiter {
-    use Rho\HasLogger;
-
     protected $limits;
 
     public function __construct($obj, $opts = []) {

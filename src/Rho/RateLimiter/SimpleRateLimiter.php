@@ -6,6 +6,8 @@ use Rho;
 use Rho\Exception\OverRateLimitException;
 
 class SimpleRateLimiter extends AbstractRateLimiter {
+    use Rho\HasLogger;
+
     protected $buckets = [];
 
     public static function wrap($obj, $opts = []) {
@@ -27,7 +29,7 @@ class SimpleRateLimiter extends AbstractRateLimiter {
 
     protected function initBuckets() {
         foreach($this->limits as $duration => $_) {
-            $this->buckets[$duration] = [time(), 0];
+            $this->buckets[$duration] = [time(), 1];
         }
     }
 
@@ -45,8 +47,33 @@ class SimpleRateLimiter extends AbstractRateLimiter {
         $now = time();
         $start = $this->buckets[$duration][0];
         if($now - $duration > $start) {
-            $this->buckets[$duration] = [$now, 0];
+            $this->buckets[$duration] = [$now, 1];
         }
-        return ++$this->buckets[$duration][1] > $limit;        
+
+        $this->_logger()->debug("checking limits",
+            [
+                'duration' => $duration,
+                'limit' => $limit,
+                'start' => $this->buckets[$duration][0],
+                'count' => $this->buckets[$duration][1]
+            ]
+        );
+
+        $count = $this->buckets[$duration][1];
+        $over = $count > $limit;        
+
+        if(!$over) { 
+            $this->buckets[$duration][1]++;
+        } else {
+            $this->_logger()->info("over limit", 
+                [
+                    'duration' => $duration,
+                    'limit' => $limit,
+                    'start' => $start,
+                    'count' => $count
+                ]
+            );
+        }
+        return $over;
     }
 }

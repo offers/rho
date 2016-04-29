@@ -7,6 +7,7 @@ use Rho\Exception\CircuitBreakerOpenException;
 use \Predis;
 
 class RedisPercentCircuitBreaker extends AbstractPercentCircuitBreaker {
+    use Rho\HasLogger;
     use RedisConstructor;
 
     protected $redisLuaDefined = false;

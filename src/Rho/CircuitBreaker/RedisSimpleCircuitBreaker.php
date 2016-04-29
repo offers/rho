@@ -2,7 +2,11 @@
 
 namespace Rho\CircuitBreaker;
 
+use Rho;
+
 class RedisSimpleCircuitBreaker extends SimpleCircuitBreaker {
+    use Rho\HasLogger;
+
     const PREFIX = "cb";
 
     public static function wrap($obj) {

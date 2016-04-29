@@ -12,6 +12,8 @@ require "../vendor/autoload.php";
 use Rho\Exception;
 use Rho\Transport\HttpJsonTransport;
 use Rho\Retrier;
+use Rho\RateLimiter\SimpleRateLimiter;
+use Rho\Exception\TooManyRetriesException;
 use Monolog\Logger; 
 
 function showException($e) {
@@ -20,6 +22,7 @@ function showException($e) {
 
 $logger = new Logger('ifconfig');
 $client = new HttpJsonTransport("http://ifconfig.me", ['logger' => $logger]);
+$client = SimpleRateLimiter::wrap($client, ['logger' => $logger, 'limits' => [10 => 1]]); // limit to 1 request every 10s
 $client = Retrier::wrap($client, ['logger' => $logger]);
 
 try {
@@ -30,7 +33,7 @@ try {
     } else {
         echo "API Server error\n";
     }
-} catch(Rho\Exception\TooManyRetriesException $e) {
+} catch(TooManyRetriesException $e) {
     showException($e);
 }
 
