@@ -2,8 +2,8 @@
 
 namespace Rho;
 
-class NullLogger {
+class BlackHole {
     public function __call($name, $args) {
-        // drop it on the floor
+        // drop it into a black hole
     }
 }
