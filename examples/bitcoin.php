@@ -20,7 +20,7 @@ function showException($e) {
 }
 
 $client = new HttpJsonTransport("http://api.coindesk.com");
-$client = SimpleRateLimiter::wrap($client);
+$client = SimpleRateLimiter::wrap($client, ['limits' => [5 => 2]]); // limit to 2 requests every 5s
 $client = SimpleCircuitBreaker::wrap($client, ['failThreshold' => 3, 'resetTime' => 10]);
 $client = Retrier::wrap($client, ['retries' => 10, 'delay' => 1000]); // delay in ms
 
