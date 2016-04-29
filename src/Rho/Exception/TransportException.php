@@ -1,6 +1,6 @@
 <?php
 
-namespace Rho;
+namespace Rho\Exception;
 
 class TransportException extends \Exception {
     public function __construct($e) {

@@ -9,6 +9,7 @@
 
 require "../vendor/autoload.php";
 
+use Rho\Exception;
 use Rho\Transport\HttpJsonTransport;
 use Rho\Retrier;
 use Monolog\Logger; 
@@ -29,7 +30,7 @@ try {
     } else {
         echo "API Server error\n";
     }
-} catch(Rho\TooManyRetriesException $e) {
+} catch(Rho\Exception\TooManyRetriesException $e) {
     showException($e);
 }
 

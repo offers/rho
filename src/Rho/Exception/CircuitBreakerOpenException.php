@@ -1,6 +1,6 @@
 <?php
 
-namespace Rho\CircuitBreaker;
+namespace Rho\Exception;
 
 class CircuitBreakerOpenException extends \Exception {
     public function __construct() {

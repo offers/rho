@@ -3,7 +3,7 @@
 namespace Rho\Transport;
 
 use Rho;
-use Rho\TransportException;
+use Rho\Exception\TransportException;
 use Rho\{ErrorResponse,Response};
 use GuzzleHttp;
 

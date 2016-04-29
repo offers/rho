@@ -4,6 +4,7 @@ namespace Rho\CircuitBreaker;
 
 use Rho;
 use Rho\NullLogger;
+use Rho\Exception\CircuitBreakerOpenException;
 
 class SimpleCircuitBreaker {
     use Rho\HasLogger;

@@ -5,7 +5,7 @@ namespace Rho\Tests;
 use Rho;
 use Rho\CircuitBreaker;
 use Rho\CircuitBreaker\SimpleCircuitBreaker;
-use Rho\CircuitBreaker\CircuitBreakerOpenException;
+use Rho\Exception\CircuitBreakerOpenException;
 
 class SimpleCircuitBreakerTest extends \PHPUnit_Framework_TestCase {
     public function testCircuitStartsClosed() {

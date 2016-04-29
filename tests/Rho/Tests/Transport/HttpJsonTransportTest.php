@@ -5,6 +5,7 @@ namespace Rho\Tests;
 use Rho;
 use Rho\Transport;
 use Rho\NullLogger;
+use Rho\Exception\TransportException;
 use GuzzleHttp;
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
@@ -44,7 +45,7 @@ class HttpJsonTransportTest extends \PHPUnit_Framework_TestCase {
         $t = new FakeHttpJsonTransport($client, 'http://localhost');
 
         // throws an exception since we didn't implement a response
-        $this->expectException(Rho\TransportException::class);
+        $this->expectException(TransportException::class);
         $t->rpc(['GET', '/example'], $args);
 
         $this->assertCount(1, $container);
@@ -74,7 +75,7 @@ class HttpJsonTransportTest extends \PHPUnit_Framework_TestCase {
         ]);
         $http = $this->makeMock($mock);
 
-        $this->expectException(Rho\TransportException::class);
+        $this->expectException(TransportException::class);
         $resp = $http->rpc([$method, $endpoint], []);
     }
 }

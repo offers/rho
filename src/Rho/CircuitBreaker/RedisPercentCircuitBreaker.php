@@ -2,6 +2,8 @@
 
 namespace Rho\CircuitBreaker;
 
+use Rho;
+use Rho\Exception\CircuitBreakerOpenException;
 use \Predis;
 
 class RedisPercentCircuitBreaker extends AbstractPercentCircuitBreaker {

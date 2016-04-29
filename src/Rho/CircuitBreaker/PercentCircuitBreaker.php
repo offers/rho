@@ -3,6 +3,7 @@
 namespace Rho\CircuitBreaker;
 
 use Rho;
+use Rho\Exception\CircuitBreakerOpenException;
 
 class PercentCircuitBreaker extends AbstractPercentCircuitBreaker {
     use Rho\HasLogger;

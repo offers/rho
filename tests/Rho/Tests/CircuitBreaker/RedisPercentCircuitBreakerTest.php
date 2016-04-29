@@ -6,7 +6,7 @@ namespace Rho\Tests;
 use Rho;
 use Rho\CircuitBreaker;
 use Rho\CircuitBreaker\RedisPercentCircuitBreaker;
-use Rho\CircuitBreaker\CircuitBreakerOpenException;
+use Rho\Exception\CircuitBreakerOpenException;
 use \Predis;
 
 class RedisPercentCircuitBreakerTest extends \PHPUnit_Framework_TestCase {

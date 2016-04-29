@@ -9,15 +9,18 @@
 
 require "../vendor/autoload.php";
 
+use Rho\Exception;
 use Rho\Transport\HttpJsonTransport;
 use Rho\CircuitBreaker\SimpleCircuitBreaker;
 use Rho\Retrier;
+use Rho\RateLimiter\SimpleRateLimiter;
 
 function showException($e) {
     echo $e->getMessage() . "\n";
 }
 
 $client = new HttpJsonTransport("http://api.coindesk.com");
+$client = SimpleRateLimiter::wrap($client);
 $client = SimpleCircuitBreaker::wrap($client, ['failThreshold' => 3, 'resetTime' => 10]);
 $client = Retrier::wrap($client, ['retries' => 10, 'delay' => 1000]); // delay in ms
 
@@ -29,8 +32,8 @@ try {
     } else {
         echo "API Server error\n";
     }
-} catch(Rho\CircuitBreaker\CircuitBreakerOpenException $e) {
+} catch(Rho\Exception\CircuitBreakerOpenException $e) {
     showException($e);
-} catch(Rho\TooManyRetriesException $e) {
+} catch(Rho\Exception\TooManyRetriesException $e) {
     showException($e);
 }

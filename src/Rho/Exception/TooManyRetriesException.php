@@ -1,7 +1,6 @@
 <?php
 
-namespace Rho;
+namespace Rho\Exception;
 
 class TooManyRetriesException extends \Exception {
-
 }
