@@ -1,14 +1,12 @@
-FROM offers/baseimage:0.2.1
+FROM offers/baseimage:0.2.2
 
 RUN apt-add-repository -y ppa:ondrej/php \
-    && export PHP_VERSION=1:7.0+36+deb.sury.org~trusty+1 \
-    && export PHP_COMMON_VERSION=1:36+deb.sury.org~trusty+1 \
     && apt-get update \
     && DEBIAN_FRONTEND=noninteractive \
     apt-get install -qqy --force-yes --no-install-recommends \
                     git \
-                    php-cli=$PHP_VERSION \
-                    php-common=$PHP_COMMON_VERSION \
+                    php-cli \
+                    php-common \
                     php7.0-xml \
                     php7.0-zip \
     && apt-get clean \
