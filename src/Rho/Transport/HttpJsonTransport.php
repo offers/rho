@@ -4,7 +4,8 @@ namespace Rho\Transport;
 
 use Rho;
 use Rho\Exception\TransportException;
-use Rho\{ErrorResponse,Response};
+use Rho\ErrorResponse;
+use Rho\Response;
 use GuzzleHttp;
 
 class HttpJsonTransport extends AbstractTransport {

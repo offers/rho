@@ -3,7 +3,8 @@
 namespace Rho;
 
 use Rho;
-use Rho\Exception\{CircuitBreakerOpenException,TooManyRetriesException};
+use Rho\Exception\CircuitBreakerOpenException;
+use Rho\Exception\TooManyRetriesException;
 
 class Retrier {
     use HasLogger;
