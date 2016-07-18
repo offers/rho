@@ -38,17 +38,18 @@ class SimpleCircuitBreaker {
             case self::CLOSED:
             case self::HALF_OPEN:
                 try {
-                    $this->_logger()->debug("closed or half-open", ['func' => $name, 'args' => $args]);
+                    $this->_logger()->debug("circuit closed or half-open", ['func' => $name]);
                     $result = call_user_func_array([$this->obj, $name], $args);
                     $this->circuitBreakerReset();
                     return $result;
                 } catch (\Exception $e) {
+                    $this->_logger()->error('Exception', ['exception' => $e]);
                     $this->circuitRecordFail();
                     throw $e;
                 }
                 break;
             case self::OPEN:
-                $this->_logger()->info("open");
+                $this->_logger()->warning("circuit open", ['func' => $name]);
                 throw new CircuitBreakerOpenException();
                 break;
         }
@@ -67,7 +68,7 @@ class SimpleCircuitBreaker {
     protected function circuitRecordFail() {
         $this->fails++;
         $this->lastFailTime = microtime(true);
-        $this->_logger()->info("circuit failed", ['fails' => $this->fails]);
+        $this->_logger()->warning("circuit failed", ['fails' => $this->fails]);
     }
 
     protected function circuitTooManyFails(): bool {
@@ -81,6 +82,6 @@ class SimpleCircuitBreaker {
     protected function circuitBreakerReset() {
         $this->fails = 0;
         $this->lastFailTime = null;
-        $this->_logger()->debug("reset");
+        $this->_logger()->info("circuit reset");
     }
 }

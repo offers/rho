@@ -13,7 +13,13 @@ trait HasLogger {
         }
 
         if(isset($this->opts['logger'])) {
-            $this->logger = $this->opts['logger']->withName(get_class());
+            // clone the logger to modify it w/o affecting the original
+            $this->logger = clone $this->opts['logger'];
+            // add the Rho classname as an extra param to all records
+            $this->logger->pushProcessor(function ($record) {
+                $record['extra']['class'] = get_class();
+                return $record;
+            });
         } else {
             $this->logger = new BlackHole();
         }

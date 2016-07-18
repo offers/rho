@@ -42,19 +42,20 @@ class Retrier {
             try {
                 return call_user_func_array([$this->obj, $name], $args);
             } catch(CircuitBreakerOpenException $e) {
-                $this->_logger()->info("circuit breaker open");
+                $this->_logger()->warning("circuit breaker open, won't retry", ['func' => $name]);
                 throw $e;
             } catch(\Exception $e) {
+                $this->_logger()->error('Exception', ['exception' => $e]);
                 if(0 == $this->retries || $r < $this->retries) {
                     $d = $this->delay * 1000000 * ($this->backoff ** $this->retries);
-                    $this->_logger()->info("exception, delaying", ['delay' => floatval($d) / 1000000]);
+                    $this->_logger()->warning("exception, delaying", ['func' => $name, 'delay' => floatval($d) / 1000000]);
                     usleep($d);
                 }
             }
         }
 
         $r--;
-        $this->_logger()->info("too many retries", ['retries' => $r]);
+        $this->_logger()->warning("too many retries, giving up", ['func' => $name, 'retries' => $r]);
         throw new TooManyRetriesException("$r retries for $name");
     }
 }
