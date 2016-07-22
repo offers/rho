@@ -12,8 +12,8 @@ class RedisPercentCircuitBreaker extends AbstractPercentCircuitBreaker {
 
     protected $redisLuaDefined = false;
 
-    public static function wrap($obj) {
-        return new PercentCircuitBreaker($obj);
+    public static function wrap($obj, $opts = []) {
+        return new RedisPercentCircuitBreaker($obj, $opts);
     }
 
     public function __call($name, $args) {

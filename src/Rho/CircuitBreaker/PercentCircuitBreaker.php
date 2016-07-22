@@ -12,8 +12,8 @@ class PercentCircuitBreaker extends AbstractPercentCircuitBreaker {
     protected $fails = 0;
     protected $periodStart = 0;
 
-    public static function wrap($obj) {
-        return new PercentCircuitBreaker($obj);
+    public static function wrap($obj, $opts = []) {
+        return new PercentCircuitBreaker($obj, $opts);
     }
 
     public function __call($name, $args) {

@@ -14,7 +14,7 @@ abstract class AbstractPercentCircuitBreaker {
     protected $timePeriod = 15; // seconds
     protected $minCalls = 1;
 
-    abstract static function wrap($obj);
+    abstract static function wrap($obj, $opts = []);
 
     public function __construct($obj, $opts = []) {
         $this->obj = $obj;

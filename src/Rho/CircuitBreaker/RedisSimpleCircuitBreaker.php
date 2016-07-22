@@ -9,8 +9,8 @@ class RedisSimpleCircuitBreaker extends SimpleCircuitBreaker {
 
     const PREFIX = "cb";
 
-    public static function wrap($obj) {
-        return new RedisSimpleCircuitBreaker($obj);
+    public static function wrap($obj, $opts = []) {
+        return new RedisSimpleCircuitBreaker($obj, $opts);
     }
 
     protected function circuitRecordFail() {
